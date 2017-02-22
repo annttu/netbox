@@ -5,7 +5,7 @@
     <td>
         {{ ip.vrf|default:"Global" }}
     </td>
-    <td>{{ ip.interface }}</td>
+    <td>{% if ip.interface %}{{ ip.interface }}{% elif ip.virtual_interface %}{{ ip.virtual_interface }}{%  endif %}</td>
     <td>
         {% if virtual_machine.primary_ip4 == ip or virtual_machine.primary_ip6 == ip %}
             <span class="label label-success">Primary</span>

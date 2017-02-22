@@ -65,7 +65,7 @@ class VirtualMachine(CreatedUpdatedModel, CustomFieldModel):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('virtual:virtual_machine', args=[self.slug])
+        return reverse('virtual:virtual_machine', args=[self.pk])
 
     def to_csv(self):
         return csv_format([
