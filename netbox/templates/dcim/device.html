@@ -85,6 +85,25 @@
                 </tr>
             </table>
         </div>
+        {% if device.virtual_cluster %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Virtuals</strong>
+            </div>
+            <table class="table table-hover panel-body attr-table">
+                <tr>
+                    <td>Virtual Cluster</td>
+                    <td>
+                        {% if device.virtual_cluster %}
+                            <span><a href="{{ device.virtual_cluster.get_absolute_url }}">{{ device.virtual_cluster }}</a></span>
+                        {% else %}
+                            <span class="text-muted">None</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading">
                 <strong>Management</strong>

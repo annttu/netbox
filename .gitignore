@@ -8,3 +8,5 @@
 fabfile.py
 *.swp
 gunicorn_config.py
+env/
+.gitignore

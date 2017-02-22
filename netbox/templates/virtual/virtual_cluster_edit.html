@@ -3,14 +3,10 @@
 
 {% block form %}
     <div class="panel panel-default">
-        <div class="panel-heading"><strong>Virtual Machine</strong></div>
+        <div class="panel-heading"><strong>Virtual Cluster</strong></div>
         <div class="panel-body">
             {% render_field form.name %}
             {% render_field form.slug %}
-            {% render_field form.tenant %}
-            {% render_field form.group %}
-            {% render_field form.status %}
-            {% render_field form.virtual_cluster %}
             {% render_field form.description %}
         </div>
     </div>
@@ -22,10 +18,4 @@
             </div>
         </div>
     {% endif %}
-    <div class="panel panel-default">
-        <div class="panel-heading"><strong>Comments</strong></div>
-        <div class="panel-body">
-            {% render_field form.comments %}
-        </div>
-    </div>
 {% endblock %}

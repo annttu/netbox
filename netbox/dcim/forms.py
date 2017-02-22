@@ -465,7 +465,7 @@ class DeviceForm(BootstrapMixin, CustomFieldForm):
     class Meta:
         model = Device
         fields = ['name', 'device_role', 'tenant', 'device_type', 'serial', 'asset_tag', 'site', 'rack', 'position',
-                  'face', 'status', 'platform', 'primary_ip4', 'primary_ip6', 'comments']
+                  'face', 'status', 'platform', 'primary_ip4', 'primary_ip6', 'virtual_cluster', 'comments']
         help_texts = {
             'device_role': "The function this device serves",
             'serial': "Chassis serial number",

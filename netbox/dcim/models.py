@@ -898,6 +898,9 @@ class Device(CreatedUpdatedModel, CustomFieldModel):
     comments = models.TextField(blank=True)
     custom_field_values = GenericRelation(CustomFieldValue, content_type_field='obj_type', object_id_field='obj_id')
 
+    virtual_cluster = models.ForeignKey('virtual.VirtualCluster', related_name='devices', blank=True, null=True,
+                                        on_delete=models.PROTECT)
+
     objects = DeviceManager()
 
     class Meta:

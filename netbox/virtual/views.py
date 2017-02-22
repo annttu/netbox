@@ -5,13 +5,17 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 
+from dcim.tables import DeviceTable
 from dcim.views import ComponentCreateView, ComponentEditView, ComponentDeleteView
 from ipam.models import IPAddress
-from utilities.views import BulkEditView, ObjectDeleteView, ObjectEditView, ObjectListView, BulkDeleteView
+from utilities.views import BulkEditView, ObjectDeleteView, ObjectEditView, ObjectListView, BulkDeleteView, \
+    BulkImportView
 from virtual import forms
 from virtual import tables
 from .models import *
 
+
+# Virtual Machine Group
 
 class VirtualMachineGroupListView(ObjectListView):
     queryset = VirtualMachineGroup.objects.all()
@@ -27,6 +31,51 @@ class VirtualMachineGroupEditView(PermissionRequiredMixin, ObjectEditView):
     default_return_url = 'virtual:virtual_machine_group_list'
 
 
+# Virtual Cluster
+
+class VirtualClusterListView(ObjectListView):
+    queryset = VirtualCluster.objects.all()
+    table = tables.VirtualClusterTable
+    template_name = 'virtual/virtual_cluster_list.html'
+
+
+class VirtualClusterEditView(PermissionRequiredMixin, ObjectEditView):
+    permission_required = 'virtual.change_virtualcluster'
+    model = VirtualCluster
+    form_class = forms.VirtualClusterForm
+    template_name = 'virtual/virtual_cluster_edit.html'
+    default_return_url = 'virtual:virtual_cluster_list'
+
+
+def virtual_cluster(request, pk):
+    virtual_cluster = get_object_or_404(VirtualCluster, pk=pk)
+    virtual_machines = virtual_cluster.virtual_machines.all()
+    virtual_machine_table = tables.VirtualMachineTable(virtual_machines)
+    if request.user.has_perm('virutal.change_virtualmachine') or request.user.has_perm('virtual.delete_virtualmachine'):
+        virtual_machine_table.base_columns['pk'].visible = True
+
+    devices = virtual_cluster.devices.all()
+    device_table = DeviceTable(devices)
+    if request.user.has_perm('dcim.change_device') or request.user.has_perm('dcim.delete_device'):
+        device_table.base_columns['pk'].visible = True
+
+    return render(request, 'virtual/virtual_cluster.html', {
+        'virtual_cluster': virtual_cluster,
+        'virtual_machine_table': virtual_machine_table,
+        'device_table': device_table,
+        'stats': {},
+    })
+
+
+class VirtualClusterDeleteView(PermissionRequiredMixin, ObjectDeleteView):
+    permission_required = 'virtual.delete_virtual_cluster'
+    model = VirtualCluster
+    default_return_url = 'virtual:virtual_cluster_list'
+
+
+#
+# Virtual Machine
+#
 
 class VirtualMachineListView(ObjectListView):
     queryset = VirtualMachine.objects.all()
@@ -167,24 +216,15 @@ class VirtualMachineDeleteView(PermissionRequiredMixin, ObjectDeleteView):
     default_return_url = 'virtual:virtual_machine_list'
 
 
-#class VirtualMachineBulkImportView(PermissionRequiredMixin, BulkImportView):
-#    permission_required = 'dcim.add_site'
-#    form = forms.SiteImportForm
-#    table = tables.SiteTable
-#    template_name = 'dcim/site_import.html'
-#    default_return_url = 'dcim:site_list'
-#
-#
-#class VirtualMachineBulkEditView(PermissionRequiredMixin, BulkEditView):
-#    permission_required = 'virtual:change_virtual_machine'
-#    cls = VirtualMachine
-#    #filter = filters.SiteFilter
-#    form = forms.VirtualMachineBulkEditForm
-#    template_name = 'virtual/virtual_machine_bulk_edit.html'
-#    default_return_url = 'virtual:virtual_machine_list'
+class VirtualMachineBulkImportView(PermissionRequiredMixin, BulkImportView):
+    permission_required = 'virtual.add_virtualmachine'
+    form = forms.VirtualMachineImportForm
+    table = tables.VirtualMachineTable
+    template_name = 'virtual/virtual_machine_import.html'
+    default_return_url = 'virtual:virtual_machine_list'
 
 #
-# Interfaces
+# Virtual Interfaces
 #
 
 class VirtualInterfaceAddView(PermissionRequiredMixin, VirtualComponentCreateView):
@@ -225,6 +265,7 @@ class VirtualInterfaceBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
     permission_required = 'virtual.delete_interface'
     cls = VirtualInterface
     parent_cls = VirtualMachine
+
 
 #
 # IP addresses

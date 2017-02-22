@@ -60,6 +60,36 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Tenant</td>
+                        <td>
+                            {% if virtual_machine.tenant %}
+                                <span>{{ virtual_machine.tenant }}</span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Group</td>
+                        <td>
+                            {% if virtual_machine.group %}
+                                <span>{{ virtual_machine.group }}</span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Virtual Cluster</td>
+                        <td>
+                            {% if virtual_machine.virtual_cluster %}
+                                <span><a href="{{ virtual_machine.virtual_cluster.get_absolute_url }}">{{ virtual_machine.virtual_cluster }}</a></span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Description</td>
                         <td>
                             {% if virtual_machine.description %}
@@ -69,6 +99,55 @@
                             {% endif %}
                         </td>
                     </tr>
+
+                </table>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Management</strong>
+                </div>
+                <table class="table table-hover panel-body attr-table">
+                    <tr>
+                        <td>Primary IPv4</td>
+                        <td>
+                            {% if virtual_machine.primary_ip4 %}
+                                <a href="{% url 'ipam:ipaddress' pk=virtual_machine.primary_ip4.pk %}">{{ virtual_machine.primary_ip4.address.ip }}</a>
+                                {% if virtual_machine.primary_ip4.nat_inside %}
+                                    <span>(NAT for {{ virtual_machine.primary_ip4.nat_inside.address.ip }})</span>
+                                {% elif virtual_machine.primary_ip4.nat_outside %}
+                                    <span>(NAT: {{ virtual_machine.primary_ip4.nat_outside.address.ip }})</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Primary IPv6</td>
+                        <td>
+                            {% if virtual_machine.primary_ip6 %}
+                                <a href="{% url 'ipam:ipaddress' pk=virtual_machine.primary_ip6.pk %}">{{ virtual_machine.primary_ip6.address.ip }}</a>
+                                {% if virtual_machine.primary_ip6.nat_inside %}
+                                    <span>(NAT for {{ virtual_machine.primary_ip6.nat_inside.address.ip }})</span>
+                                {% elif virtual_machine.primary_ip6.nat_outside %}
+                                    <span>(NAT: {{ virtual_machine.primary_ip6.nat_outside.address.ip }})</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td>
+                            {% if virtual_machine.status %}
+                                <span class="label label-success">{{ virtual_machine.get_status_display }}</span>
+                            {% else %}
+                                <span class="label label-danger">{{ virtual_machine.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
 
                 </table>
             </div>

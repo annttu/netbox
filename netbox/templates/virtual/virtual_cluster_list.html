@@ -4,14 +4,14 @@
 
 {% block content %}
     <div class="pull-right">
-        {% if perms.virtual.add_virtualmachinegroup %}
-            <a href="{% url 'virtual:virtual_machine_group_add' %}" class="btn btn-primary">
+        {% if perms.virtual.add_virtualcluster %}
+            <a href="{% url 'virtual:virtual_cluster_add' %}" class="btn btn-primary">
                 <span class="fa fa-plus" aria-hidden="true"></span>
-                Add a virtual machine group
+                Add a virtual cluster
             </a>
-            <a href="{% url 'virtual:virtual_machine_group_import' %}" class="btn btn-info">
+            <a href="{% url 'virtual:virtual_cluster_import' %}" class="btn btn-info">
                 <span class="fa fa-download" aria-hidden="true"></span>
-                Import virtual machine groups
+                Import virtual clusters
             </a>
         {% endif %}
     </div>

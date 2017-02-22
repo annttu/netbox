@@ -5,6 +5,15 @@ from . import views
 
 urlpatterns = [
 
+    # Virtual Cluster
+    url(r'^virtual_cluster/$', views.VirtualClusterListView.as_view(), name='virtual_cluster_list'),
+    url(r'^virtual_cluster/add/$', views.VirtualClusterEditView.as_view(), name='virtual_cluster_add'),
+    url(r'^virtual_cluster/(?P<pk>\d+)/$', views.virtual_cluster, name='virtual_cluster'),
+    url(r'^virtual_cluster/(?P<pk>\d+)/edit/$', views.VirtualClusterEditView.as_view(), name='virtual_cluster_edit'),
+    url(r'^virtual_cluster/(?P<pk>\d+)/delete/$', views.VirtualClusterDeleteView.as_view(), name='virtual_cluster_delete'),
+    url(r'^virtual_cluster/import/$', views.VirtualClusterEditView.as_view(), name='virtual_cluster_import'),
+
+
     # Virtual Machine group
     url(r'^virtual_machine_group/$', views.VirtualMachineGroupListView.as_view(), name='virtual_machine_group_list'),
     url(r'^virtual_machine_group/add/$', views.VirtualMachineGroupEditView.as_view(), name='virtual_machine_group_add'),

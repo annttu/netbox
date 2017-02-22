@@ -582,6 +582,7 @@ class Service(CreatedUpdatedModel):
     """
     device = models.ForeignKey('dcim.Device', related_name='services', on_delete=models.CASCADE, verbose_name='device')
     name = models.CharField(max_length=30)
+
     protocol = models.PositiveSmallIntegerField(choices=IP_PROTOCOL_CHOICES)
     port = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(65535)],
                                        verbose_name='Port number')

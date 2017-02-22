@@ -21,6 +21,12 @@ IFACE_ORDERING_CHOICES = [
     [IFACE_ORDERING_NAME, 'Name (alphabetically)']
 ]
 
+STATUS_ACTIVE = True
+STATUS_OFFLINE = False
+STATUS_CHOICES = [
+    [STATUS_ACTIVE, 'Active'],
+    [STATUS_OFFLINE, 'Offline'],
+]
 
 @python_2_unicode_compatible
 class VirtualMachineGroup(models.Model):
@@ -54,7 +60,7 @@ class VirtualMachine(CreatedUpdatedModel, CustomFieldModel):
     """
     name = models.CharField(max_length=30, unique=True)
     slug = models.SlugField(unique=True)
-    group = models.ForeignKey('VirtualMachineGroup', related_name='groups', blank=True, null=True, on_delete=models.SET_NULL)
+    group = models.ForeignKey('VirtualMachineGroup', related_name='virtual_machines', blank=True, null=True, on_delete=models.SET_NULL)
     tenant = models.ForeignKey(Tenant, related_name='virtual_machines', blank=True, null=True, on_delete=models.PROTECT)
     description = models.CharField(max_length=100, blank=True, help_text="Long-form name (optional)")
     comments = models.TextField(blank=True)
@@ -64,6 +70,10 @@ class VirtualMachine(CreatedUpdatedModel, CustomFieldModel):
                                        blank=True, null=True, verbose_name='Primary IPv4')
     primary_ip6 = models.OneToOneField('ipam.IPAddress', related_name='primary_ip6_for_virtual', on_delete=models.SET_NULL,
                                        blank=True, null=True, verbose_name='Primary IPv6')
+    status = models.BooleanField(choices=STATUS_CHOICES, default=STATUS_ACTIVE, verbose_name='Status')
+    virtual_cluster = models.ForeignKey('VirtualCluster', related_name='virtual_machines', blank=True, null=True,
+                                        on_delete=models.PROTECT)
+
 
     class Meta:
         ordering = ['group', 'name', 'tenant']
@@ -101,6 +111,7 @@ class VirtualInterfaceManager(models.Manager):
             '_channel': "CAST(SUBSTRING({} FROM ':([0-9]+)$') AS integer)".format(sql_col),
         }).order_by(*ordering)
 
+
 @python_2_unicode_compatible
 class VirtualInterface(models.Model):
     """
@@ -123,3 +134,24 @@ class VirtualInterface(models.Model):
     @property
     def is_connected(self):
         return bool(self.connection)
+
+
+@python_2_unicode_compatible
+class VirtualCluster(models.Model):
+    """
+    Virtual Cluster shares network and disk configurations across Devices
+    """
+    name = models.CharField(max_length=30, unique=True)
+    slug = models.SlugField(unique=True)
+    description = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def get_absolute_url(self):
+        return reverse('virtual:virtual_cluster', args=[self.pk])
+
+    def __str__(self):
+        return self.name
+
+

@@ -2,8 +2,9 @@ from django import forms
 
 from extras.forms import CustomFieldBulkEditForm, CustomFieldForm
 from ipam.models import IPAddress
-from utilities.forms import BootstrapMixin, SlugField, ExpandableNameField, BulkEditForm
-from virtual.models import VirtualMachine, VirtualInterface, VirtualMachineGroup
+from tenancy.models import Tenant
+from utilities.forms import BootstrapMixin, SlugField, ExpandableNameField, BulkEditForm, BulkImportForm, CSVDataField
+from virtual.models import VirtualMachine, VirtualInterface, VirtualMachineGroup, VirtualCluster
 
 
 class VirtualMachineGroupForm(BootstrapMixin, forms.ModelForm):
@@ -14,12 +15,20 @@ class VirtualMachineGroupForm(BootstrapMixin, forms.ModelForm):
         fields = ['name', 'description', 'slug']
 
 
+class VirtualClusterForm(BootstrapMixin, forms.ModelForm):
+    slug = SlugField()
+
+    class Meta:
+        model = VirtualCluster
+        fields = ['name', 'description', 'slug']
+
+
 class VirtualMachineForm(BootstrapMixin, forms.ModelForm):
     slug = SlugField()
 
     class Meta:
         model = VirtualMachine
-        fields = ['name', 'description', 'slug', 'comments', 'tenant', 'group']
+        fields = ['name', 'description', 'slug', 'comments', 'tenant', 'group', 'status', 'virtual_cluster']
 
 
 class VirtualMachineBulkEditForm(BootstrapMixin, CustomFieldBulkEditForm):
@@ -28,6 +37,20 @@ class VirtualMachineBulkEditForm(BootstrapMixin, CustomFieldBulkEditForm):
     class Meta:
         nullable_fields = []
 
+
+class VirtualMachineFromCSVForm(forms.ModelForm):
+    tenant = forms.ModelChoiceField(Tenant.objects.all(), to_field_name='name', required=False,
+                                    error_messages={'invalid_choice': 'Tenant not found.'})
+    group = forms.ModelChoiceField(VirtualMachineGroup.objects.all(), to_field_name='name', required=False,
+                                   error_messages={'invalid_choice': 'Virtual Machine Group not found.'})
+
+    class Meta:
+        model = VirtualMachine
+        fields = ['name', 'slug', 'tenant', 'group', 'description']
+
+
+class VirtualMachineImportForm(BootstrapMixin, BulkImportForm):
+    csv = CSVDataField(csv_form=VirtualMachineFromCSVForm)
 
 #
 # Interfaces
@@ -55,6 +78,12 @@ class VirtualInterfaceBulkEditForm(BootstrapMixin, BulkEditForm):
     class Meta:
         nullable_fields = ['description']
 
+
+#
+# Virtual Cluster
+#
+
+#class VirtualCluster()
 
 #
 # IP addresses

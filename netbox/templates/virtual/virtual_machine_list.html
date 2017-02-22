@@ -4,12 +4,12 @@
 
 {% block content %}
     <div class="pull-right">
-        {% if perms.virtual.add_virtual_machine %}
+        {% if perms.virtual.add_virtualmachine %}
             <a href="{% url 'virtual:virtual_machine_add' %}" class="btn btn-primary">
                 <span class="fa fa-plus" aria-hidden="true"></span>
                 Add a virtual machine
             </a>
-            <a href="{% url 'virtual:virtual_machine_add' %}" class="btn btn-info">
+            <a href="{% url 'virtual:virtual_machine_import' %}" class="btn btn-info">
                 <span class="fa fa-download" aria-hidden="true"></span>
                 Import virtual machines
             </a>

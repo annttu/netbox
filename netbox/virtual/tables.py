@@ -5,7 +5,7 @@ import django_tables2 as tables
 from django_tables2.utils import Accessor
 
 from utilities.tables import BaseTable, ToggleColumn
-from virtual.models import VirtualMachine, VirtualMachineGroup
+from virtual.models import VirtualMachine, VirtualMachineGroup, VirtualCluster
 
 
 class VirtualMachineTable(BaseTable):
@@ -23,4 +23,13 @@ class VirtualMachineGroupTable(BaseTable):
 
     class Meta(BaseTable.Meta):
         model = VirtualMachineGroup
+        fields = ('pk', 'name', 'description')
+
+
+class VirtualClusterTable(BaseTable):
+    pk = ToggleColumn()
+    name = tables.LinkColumn('virtual:virtual_cluster', args=[Accessor('pk')], verbose_name='Name')
+
+    class Meta(BaseTable.Meta):
+        model = VirtualCluster
         fields = ('pk', 'name', 'description')
