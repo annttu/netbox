@@ -3,7 +3,15 @@ from django import forms
 from extras.forms import CustomFieldBulkEditForm, CustomFieldForm
 from ipam.models import IPAddress
 from utilities.forms import BootstrapMixin, SlugField, ExpandableNameField, BulkEditForm
-from virtual.models import VirtualMachine, VirtualInterface
+from virtual.models import VirtualMachine, VirtualInterface, VirtualMachineGroup
+
+
+class VirtualMachineGroupForm(BootstrapMixin, forms.ModelForm):
+    slug = SlugField()
+
+    class Meta:
+        model = VirtualMachineGroup
+        fields = ['name', 'description', 'slug']
 
 
 class VirtualMachineForm(BootstrapMixin, forms.ModelForm):

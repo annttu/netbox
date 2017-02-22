@@ -29,6 +29,7 @@ class VirtualMachineGroup(models.Model):
     """
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(unique=True)
+    description = models.CharField(max_length=100, blank=True, help_text="Long-form name (optional)")
 
     class Meta:
         ordering = ['name']
@@ -37,8 +38,14 @@ class VirtualMachineGroup(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return "{}?group={}".format(reverse('virtual:virtual_machine_list'), self.pk)
+        return reverse('virtual:virtual_machine_group', args=[self.pk])
 
+    def to_csv(self):
+        return csv_format([
+            self.name,
+            self.slug,
+            self.description,
+        ])
 
 @python_2_unicode_compatible
 class VirtualMachine(CreatedUpdatedModel, CustomFieldModel):

@@ -13,11 +13,23 @@ from virtual import tables
 from .models import *
 
 
+class VirtualMachineGroupListView(ObjectListView):
+    queryset = VirtualMachineGroup.objects.all()
+    table = tables.VirtualMachineGroupTable
+    template_name = 'virtual/virtual_machine_group_list.html'
+
+
+class VirtualMachineGroupEditView(PermissionRequiredMixin, ObjectEditView):
+    permission_required = 'virtual.change_virtualmachinegroup'
+    model = VirtualMachineGroup
+    form_class = forms.VirtualMachineGroupForm
+    template_name = 'virtual/virtual_machine_group_edit.html'
+    default_return_url = 'virtual:virtual_machine_group_list'
+
+
 
 class VirtualMachineListView(ObjectListView):
-    queryset = VirtualMachine.objects.all() #select_related('tenant')
-    #filter = filters.SiteFilter
-    #filter_form = forms.SiteFilterForm
+    queryset = VirtualMachine.objects.all()
     table = tables.VirtualMachineTable
     template_name = 'virtual/virtual_machine_list.html'
 
@@ -231,7 +243,7 @@ def ipaddress_assign(request, pk):
             ipaddress.virtual_interface = form.cleaned_data['virtual_interface']
             ipaddress.save()
             form.save_custom_fields()
-            messages.success(request, u"Added new IP address {} to interface {}.".format(ipaddress, ipaddress.interface))
+            messages.success(request, u"Added new IP address {} to interface {}.".format(ipaddress, ipaddress.virtual_interface))
 
             if form.cleaned_data['set_as_primary']:
                 if ipaddress.family == 4:
