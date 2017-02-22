@@ -217,6 +217,16 @@
                             {% endif %}
                         </ul>
                     </li>
+                    <li class="dropdown{% if request.path|startswith:'/virtual/' %} active{% endif %}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Virtual<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'virtual:virtual_machine_list' %}"><i class="fa fa-search" aria-hidden="true"></i> Virtual Machines</a></li>
+                            {% if perms.virtual.add_virtual_machine %}
+                                <li><a href="{% url 'virtual:virtual_machine_add' %}"><i class="fa fa-plus" aria-hidden="true"></i> Add a Virtual Machine</a></li>
+                                <li><a href="{% url 'virtual:virtual_machine_import' %}"><i class="fa fa-download" aria-hidden="true"></i> Import Virtual Machines</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
                     {% if request.user.is_authenticated %}
                         <li class="dropdown{% if request.path|startswith:'/secrets/' %} active{% endif %}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Secrets <span class="caret"></span></a>

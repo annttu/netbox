@@ -1,0 +1,180 @@
+{% extends '_base.html' %}
+{% load static from staticfiles %}
+{% load render_table from django_tables2 %}
+{% load helpers %}
+
+{% block title %}{{ virtual_machine }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-8 col-md-9">
+            <ol class="breadcrumb">
+                <li><a href="{% url 'virtual:virtual_machine_list' %}">Virtual Machines</a></li>
+                <li>{{ virtual_machine }}</li>
+            </ol>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <form action="{% url 'virtual:virtual_machine_list' %}" method="get">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search virtual machines" />
+                    <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="fa fa-search" aria-hidden="true"></span>
+                    </button>
+                </span>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="pull-right">
+        {% if perms.virtual.change_virtual_machine %}
+            <a href="{% url 'virtual:virtual_machine_edit' pk=virtual_machine.pk %}" class="btn btn-warning">
+                <span class="fa fa-pencil" aria-hidden="true"></span>
+                Edit this virtual machine
+            </a>
+        {% endif %}
+        {% if perms.dcim.delete_virtual_machine %}
+            <a href="{% url 'virtual:virtual_machine_delete' pk=virtual_machine.pk %}" class="btn btn-danger">
+                <span class="fa fa-trash" aria-hidden="true"></span>
+                Delete this virtual machine
+            </a>
+        {% endif %}
+    </div>
+    <h1>{{ virtual_machine.name }}</h1>
+    {% include 'inc/created_updated.html' with obj=virtual_machine %}
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Virtual Machine</strong>
+                </div>
+                <table class="table table-hover panel-body attr-table">
+                    <tr>
+                        <td>Name</td>
+                        <td>
+                            {% if virtual_machine.name %}
+                                <span>{{ virtual_machine.name }}</span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td>
+                            {% if virtual_machine.description %}
+                                <span>{{ virtual_machine.description }}</span>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>IP Addresses</strong>
+                </div>
+                {% if ip_addresses %}
+                    <table class="table table-hover panel-body">
+                        {% for ip in ip_addresses %}
+                            {% include 'virtual/inc/ip_address.html' %}
+                        {% endfor %}
+                    </table>
+                {% elif interfaces or mgmt_interfaces %}
+                    <div class="panel-body text-muted">
+                        None assigned
+                    </div>
+                {% else %}
+                    <div class="panel-body">
+                        <a href="{% url 'virtual:virtual_interface_add' pk=virtual_machine.pk %}">Create an interface</a> to assign an IP.
+                    </div>
+                {% endif %}
+                {% if perms.ipam.add_ipaddress %}
+                    {% if interfaces or mgmt_interfaces %}
+                        <div class="panel-footer text-right">
+                            <a href="{% url 'virtual:ipaddress_assign' pk=virtual_machine.pk %}" class="btn btn-xs btn-primary">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Assign IP address
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% with virtual_machine.get_custom_fields as custom_fields %}
+                {% include 'inc/custom_fields_panel.html' %}
+            {% endwith %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Comments</strong>
+                </div>
+                <div class="panel-body">
+                    {% if virtual_machine.comments %}
+                        {{ virtual_machine.comments|gfm }}
+                    {% else %}
+                        <span class="text-muted">None</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+
+        <!-- interface -->
+            {% if perms.dcim.delete_interface %}
+                <form method="post">
+                {% csrf_token %}
+            {% endif %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Interfaces</strong>
+                    <div class="pull-right">
+                        {% if perms.dcim.change_interface and interfaces|length > 1 %}
+                            <button class="btn btn-default btn-xs toggle">
+                                <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span> Select all
+                            </button>
+                        {% endif %}
+                        {% if perms.dcim.add_interface and interfaces|length > 10 %}
+                            <a href="{% url 'virtual:virtual_interface_add' pk=virtual_machine.pk %}" class="btn btn-primary btn-xs">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add interfaces
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <table class="table table-hover panel-body">
+                    {% for iface in interfaces %}
+                        {% include 'virtual/virtual_interface.html' with selectable=True %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No interfaces defined</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% if perms.dcim.add_interface or perms.virtual.delete_virtualinterface %}
+                    <div class="panel-footer">
+                        {% if interfaces and perms.dcim.change_virtualinterface %}
+                            <button type="submit" name="_edit" formaction="{% url 'virtual:virtual_interface_bulk_edit' pk=virtual_machine.pk %}" class="btn btn-warning btn-xs">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit selected
+                            </button>
+                        {% endif %}
+                        {% if interfaces and perms.virtual.delete_virtualinterface %}
+                            <button type="submit" name="_delete" formaction="{% url 'virtual:virtual_interface_bulk_delete' pk=virtual_machine.pk %}" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete selected
+                            </button>
+                        {% endif %}
+                        {% if perms.virtual.add_virtualinterface %}
+                            <div class="pull-right">
+                                <a href="{% url 'virtual:virtual_interface_add' pk=virtual_machine.pk %}" class="btn btn-primary btn-xs">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add interfaces
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {% if perms.dcim.delete_interface %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

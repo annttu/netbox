@@ -101,6 +101,11 @@
                             {% if perms.dcim.change_device and perms.ipam.change_ipaddress %}
                                 <a href="{% url 'ipam:ipaddress_remove' pk=ipaddress.pk %}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i> Remove</a>
                             {% endif %}
+                        {% elif ipaddress.virtual_interface %}
+                            <span><a href="{% url 'virtual:virtual_machine' pk=ipaddress.virtual_interface.virtual_machine.pk %}">{{ ipaddress.virtual_interface.virtual_machine }}</a> ({{ ipaddress.virtual_interface }})</span>
+                            {% if perms.virtual.change_virtualmachine and perms.ipam.change_ipaddress %}
+                                <a href="{% url 'ipam:ipaddress_remove' pk=ipaddress.pk %}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i> Remove</a>
+                            {% endif %}
                         {% else %}
                             <span class="text-muted">None</span>
                             {% if perms.dcim.change_device and perms.ipam.change_ipaddress %}

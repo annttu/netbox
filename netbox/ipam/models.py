@@ -15,6 +15,7 @@ from tenancy.models import Tenant
 from utilities.models import CreatedUpdatedModel
 from utilities.sql import NullsFirstQuerySet
 from utilities.utils import csv_format
+from virtual.models import VirtualInterface
 
 from .fields import IPNetworkField, IPAddressField
 
@@ -405,6 +406,8 @@ class IPAddress(CreatedUpdatedModel, CustomFieldModel):
     status = models.PositiveSmallIntegerField('Status', choices=IPADDRESS_STATUS_CHOICES, default=1)
     interface = models.ForeignKey(Interface, related_name='ip_addresses', on_delete=models.CASCADE, blank=True,
                                   null=True)
+    virtual_interface = models.ForeignKey(VirtualInterface, related_name='ip_addresses', on_delete=models.CASCADE,
+                                          blank=True, null=True)
     nat_inside = models.OneToOneField('self', related_name='nat_outside', on_delete=models.SET_NULL, blank=True,
                                       null=True, verbose_name='NAT (Inside)',
                                       help_text="The IP for which this address is the \"outside\" IP")

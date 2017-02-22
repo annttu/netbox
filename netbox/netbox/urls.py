@@ -24,6 +24,7 @@ _patterns = [
     url(r'^secrets/', include('secrets.urls', namespace='secrets')),
     url(r'^tenancy/', include('tenancy.urls', namespace='tenancy')),
     url(r'^profile/', include('users.urls', namespace='users')),
+    url(r'^virtual/', include('virtual.urls', namespace='virtual')),
 
     # API
     url(r'^api/circuits/', include('circuits.api.urls', namespace='circuits-api')),

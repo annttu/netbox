@@ -1,0 +1,31 @@
+<tr{% if iface.connection and not iface.connection.connection_status %} class="info"{% endif %}>
+    {% if selectable and perms.virtual.change_virtualinterface or perms.virtual.delete_virtualinterface %}
+        <td class="pk">
+            <input name="pk" type="checkbox" value="{{ iface.pk }}" />
+        </td>
+    {% endif %}
+    <td>
+        <i class="fa fa-fw fa-{{ icon|default:"exchange" }}"></i> <span>{{ iface.name }}</span>
+        {% if iface.description %}
+            <i class="fa fa-fw fa-comment-o" title="{{ iface.description }}"></i>
+        {% endif %}
+    </td>
+    <td class="text-right">
+        {% if perms.virtual.change_virtualinterface %}
+            <a href="{% url 'virtual:virtual_interface_edit' pk=iface.pk %}" class="btn btn-info btn-xs" title="Edit interface">
+                <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i>
+            </a>
+        {% endif %}
+        {% if perms.virtual.delete_virtualinterface %}
+            {% if iface.connection or iface.circuit_termination %}
+                <button class="btn btn-danger btn-xs" disabled="disabled">
+                    <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                </button>
+            {% else %}
+                <a href="{% url 'virtual:virtual_interface_delete' pk=iface.pk %}" class="btn btn-danger btn-xs" title="Delete interface">
+                    <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+        {% endif %}
+    </td>
+</tr>

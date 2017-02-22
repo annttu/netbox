@@ -1,0 +1,15 @@
+{% extends 'utilities/bulk_edit_form.html' %}
+{% load form_helpers %}
+
+{% block title %}Interface Bulk Edit{% endblock %}
+
+{% block selected_objects_table %}
+    <tr>
+        <th>Name</th>
+    </tr>
+    {% for iface in selected_objects %}
+        <tr>
+            <td>{{ iface.name }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}

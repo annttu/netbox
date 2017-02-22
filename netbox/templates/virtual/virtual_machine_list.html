@@ -1,0 +1,24 @@
+{% extends '_base.html' %}
+
+{% block title %}Virtual Machines{% endblock %}
+
+{% block content %}
+    <div class="pull-right">
+        {% if perms.virtual.add_virtual_machine %}
+            <a href="{% url 'virtual:virtual_machine_add' %}" class="btn btn-primary">
+                <span class="fa fa-plus" aria-hidden="true"></span>
+                Add a virtual machine
+            </a>
+            <a href="{% url 'virtual:virtual_machine_add' %}" class="btn btn-info">
+                <span class="fa fa-download" aria-hidden="true"></span>
+                Import virtual machines
+            </a>
+        {% endif %}
+    </div>
+    <h1>Virtual Machines</h1>
+    <div class="row">
+        <div class="col-md-9">
+            {% include 'utilities/obj_table.html' with bulk_edit_url='virtual:virtual_machine_bulk_edit' %}
+        </div>
+    </div>
+{% endblock %}

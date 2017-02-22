@@ -114,6 +114,7 @@ INSTALLED_APPS = (
     'tenancy',
     'users',
     'utilities',
+    'virtual',
 )
 
 # Middleware
