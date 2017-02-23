@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^virtual_machine/(?P<pk>\d+)/interfaces/add/$', views.VirtualInterfaceAddView.as_view(), name='virtual_interface_add'),
     url(r'^virtual_machine/(?P<pk>\d+)/interfaces/(?P<virtualinterface>\d+)/$', views.VirtualInterfaceAddView.as_view(), name='virtual_interface_edit'),
     url(r'^virtual_interfaces/(?P<pk>\d+)/edit/$', views.VirtualInterfaceEditView.as_view(), name='virtual_interface_edit'),
-    url(r'^virutal_interfaces/(?P<pk>\d+)/delete/$', views.VirtualInterfaceDeleteView.as_view(), name='virtual_interface_delete'),
+    url(r'^virtual_interfaces/(?P<pk>\d+)/delete/$', views.VirtualInterfaceDeleteView.as_view(), name='virtual_interface_delete'),
 
     url(r'^virtual_machine/(?P<pk>\d+)/interfaces/edit/$', views.VirtualInterfaceBulkEditView.as_view(), name='virtual_interface_bulk_edit'),
     url(r'^virtual_machine/(?P<pk>\d+)/interfaces/delete/$', views.VirtualInterfaceBulkDeleteView.as_view(), name='virtual_interface_bulk_delete'),

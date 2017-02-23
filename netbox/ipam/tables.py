@@ -127,6 +127,26 @@ TENANT_LINK = """
 """
 
 
+INTERFACE_LINK = """
+{% if record.interface %}
+    {{ record.interface }}</a>
+{% elif record.virtual_interface %}
+    {{ record.virtual_interface }}
+{% else %}
+    &mdash;
+{% endif %}
+"""
+
+DEVICE_LINK = """
+{% if record.device %}
+    <a href="{% url 'dcim:device' pk=record.device.pk %}">{{ record.device }}</a>
+{% elif record.virtual_interface %}
+    <a href="{% url 'virtual:virtual_machine' pk=record.virtual_interface.virtual_machine.pk %}">{{ record.virtual_interface.virtual_machine }}</a>
+{% else %}
+    &mdash;
+{% endif %}
+"""
+
 #
 # VRFs
 #
@@ -253,9 +273,11 @@ class IPAddressTable(BaseTable):
     status = tables.TemplateColumn(STATUS_LABEL, verbose_name='Status')
     vrf = tables.TemplateColumn(VRF_LINK, verbose_name='VRF')
     tenant = tables.TemplateColumn(TENANT_LINK, verbose_name='Tenant')
-    device = tables.LinkColumn('dcim:device', args=[Accessor('interface.device.pk')], orderable=False,
-                               verbose_name='Device')
-    interface = tables.Column(orderable=False, verbose_name='Interface')
+    interface = tables.TemplateColumn(INTERFACE_LINK, verbose_name='Interface')
+    device = tables.TemplateColumn(DEVICE_LINK, verbose_name='Device')
+    #device = tables.LinkColumn('dcim:device', args=[Accessor('interface.device.pk')], orderable=False,
+    #                           verbose_name='Device')
+    #interface = tables.Column(orderable=False, verbose_name='Interface')
     description = tables.Column(verbose_name='Description')
 
     class Meta(BaseTable.Meta):

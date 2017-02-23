@@ -24,6 +24,9 @@
                             {% if obj.interface %}
                                 <a href="{% url 'dcim:device' pk=obj.interface.device.pk %}">{{ obj.interface.device }}</a>
                                 <a href="{% url 'ipam:ipaddress_remove' pk=obj.pk %}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i> Remove</a>
+                            {% elif obj.virtual_interface %}
+                                <a href="{% url 'virtual:virtual_machine' pk=obj.virtual_interface.virtual_machine.pk %}">{{ obj.virtual_interface.virtual_machine }}</a>
+                                <a href="{% url 'ipam:ipaddress_remove' pk=obj.pk %}" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-remove"></i> Remove</a>
                             {% else %}
                                 <span class="text-muted">None</span>
                                 {% if obj.pk %}
@@ -39,6 +42,8 @@
                         <p class="form-control-static">
                             {% if obj.interface %}
                                 {{ obj.interface }}
+                            {% elif obj.virtual_interface %}
+                                {{ obj.virtual_interface }}
                             {% else %}
                                 <span class="text-muted">None</span>
                             {% endif %}
